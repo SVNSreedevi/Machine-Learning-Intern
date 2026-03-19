@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Performance Predictor</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+<h1>Student Performance Predictor</h1>
+
+
+<form method="post">
+<label>Attendance (%)</label>
+<input name="attendance" type="number" step="0.1" min="0" max="100" required>
+
+
+<label>Study Hours (per week)</label>
+<input name="study_hours" type="number" step="0.1" min="0" required>
+
+
+<label>Internal Marks (out of 40)</label>
+<input name="internal_marks" type="number" step="0.1" min="0" max="40" required>
+
+
+<label>Previous Percentage</label>
+<input name="previous_percentage" type="number" step="0.1" min="0" max="100" required>
+
+
+<label>Assignments Completed (count)</label>
+<input name="assignments_completed" type="number" min="0" max="10" required>
+
+
+<label>Class Test Score (out of 25)</label>
+<input name="class_test_score" type="number" step="0.1" min="0" max="25" required>
+
+
+<button type="submit">Predict</button>
+</form>
+
+
+{% if result %}
+{% if result.error %}
+<div class="output error">Error: {{ result.error }}</div>
+{% else %}
+<div class="output">
+<p><strong>Predicted Final Score:</strong> {{ result.score }} / 100</p>
+<p><strong>Performance Category:</strong> {{ result.category }}</p>
+</div>
+{% endif %}
+{% endif %}
+
+
+<footer>
+<p>Tip: first run <code>python dataset/generate_dataset.py</code> then <code>python train_model.py</code>.</p>
+</footer>
+</div>
+</body>
+</html>
