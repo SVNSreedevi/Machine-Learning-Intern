@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Maintenance Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="header-content">
+                <h1>🚗 Vehicle Maintenance Prediction System</h1>
+                <p>Predict whether your vehicle needs maintenance using Advanced Machine Learning</p>
+                <div class="header-badges">
+                    <span class="badge">AI-Powered</span>
+                    <span class="badge">Real-time Analysis</span>
+                    <span class="badge">95% Accuracy</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Prediction Form Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2>🔧 Vehicle Information</h2>
+                    <p>Enter your vehicle details to get maintenance prediction</p>
+                </div>
+                <form id="prediction-form" class="prediction-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicle_model">🚘 Vehicle Model</label>
+                            <select id="vehicle_model" name="vehicle_model" required>
+                                <option value="">Select Model</option>
+                                <option value="Car">Car</option>
+                                <option value="SUV">SUV</option>
+                                <option value="Truck">Truck</option>
+                                <option value="Van">Van</option>
+                                <option value="Bus">Bus</option>
+                                <option value="Motorcycle">Motorcycle</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mileage">📊 Mileage</label>
+                            <input type="number" id="mileage" name="mileage" required min="0" placeholder="Enter mileage">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vehicle_age">🎂 Vehicle Age (years)</label>
+                            <input type="number" id="vehicle_age" name="vehicle_age" required min="0" max="50" placeholder="Enter age">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maintenance_history">📈 Maintenance History</label>
+                            <select id="maintenance_history" name="maintenance_history" required>
+                                <option value="">Select History</option>
+                                <option value="Good">⭐ Good</option>
+                                <option value="Average">📊 Average</option>
+                                <option value="Poor">⚠️ Poor</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reported_issues">🔴 Reported Issues</label>
+                            <input type="number" id="reported_issues" name="reported_issues" required min="0" max="10" placeholder="Number of issues">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fuel_type">⛽ Fuel Type</label>
+                            <select id="fuel_type" name="fuel_type" required>
+                                <option value="">Select Fuel Type</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transmission_type">⚙️ Transmission Type</label>
+                            <select id="transmission_type" name="transmission_type" required>
+                                <option value="">Select Transmission</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="engine_size">🔥 Engine Size (cc)</label>
+                            <input type="number" id="engine_size" name="engine_size" required min="0" placeholder="Engine size">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="odometer_reading">🛣️ Odometer Reading</label>
+                            <input type="number" id="odometer_reading" name="odometer_reading" required min="0" placeholder="Odometer reading">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fuel_efficiency">💨 Fuel Efficiency (km/L)</label>
+                            <input type="number" id="fuel_efficiency" name="fuel_efficiency" step="0.01" required min="0" placeholder="Fuel efficiency">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tire_condition">🛞 Tire Condition</label>
+                            <select id="tire_condition" name="tire_condition" required>
+                                <option value="">Select Condition</option>
+                                <option value="New">🆕 New</option>
+                                <option value="Good">✅ Good</option>
+                                <option value="Worn Out">⚠️ Worn Out</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brake_condition">🛑 Brake Condition</label>
+                            <select id="brake_condition" name="brake_condition" required>
+                                <option value="">Select Condition</option>
+                                <option value="New">🆕 New</option>
+                                <option value="Good">✅ Good</option>
+                                <option value="Worn Out">⚠️ Worn Out</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="battery_status">🔋 Battery Status</label>
+                            <select id="battery_status" name="battery_status" required>
+                                <option value="">Select Status</option>
+                                <option value="New">🆕 New</option>
+                                <option value="Good">✅ Good</option>
+                                <option value="Weak">⚠️ Weak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-predict">
+                        <span class="btn-icon">🔮</span>
+                        Predict Maintenance Need
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="section-header">
+                    <h2>📊 Prediction Results</h2>
+                    <p>AI-powered maintenance analysis</p>
+                </div>
+                <div id="results" class="results-container">
+                    <div class="placeholder-result">
+                        <div class="placeholder-icon">🚗</div>
+                        <h3>Ready to Predict!</h3>
+                        <p>Fill the form and click predict to see AI analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Analytics Section -->
+        <div class="analytics-section">
+            <div class="section-header">
+                <h2>📈 Dataset Analytics & Visualizations</h2>
+                <p>Comprehensive insights from our vehicle maintenance database</p>
+            </div>
+            
+            <!-- Key Metrics -->
+            <div class="metrics-showcase">
+                <div class="metric-card primary">
+                    <div class="metric-icon">🚗</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="total-vehicles">0</div>
+                        <div class="metric-label">Total Vehicles Analyzed</div>
+                    </div>
+                </div>
+                <div class="metric-card warning">
+                    <div class="metric-icon">⚠️</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="maintenance-percentage">0%</div>
+                        <div class="metric-label">Need Maintenance</div>
+                    </div>
+                </div>
+                <div class="metric-card info">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="avg-mileage">0</div>
+                        <div class="metric-label">Average Mileage</div>
+                    </div>
+                </div>
+                <div class="metric-card success">
+                    <div class="metric-icon">🎂</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="avg-age">0</div>
+                        <div class="metric-label">Avg Vehicle Age</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>🛠️ Maintenance Distribution</h3>
+                        <p>Overall maintenance needs analysis</p>
+                    </div>
+                    <canvas id="maintenanceChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>🚘 Vehicle Types</h3>
+                        <p>Distribution across vehicle models</p>
+                    </div>
+                    <canvas id="vehicleChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>⛽ Fuel Types</h3>
+                        <p>Fuel type distribution analysis</p>
+                    </div>
+                    <canvas id="fuelChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>📈 Maintenance History</h3>
+                        <p>Historical maintenance patterns</p>
+                    </div>
+                    <canvas id="historyChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>⚙️ Transmission Types</h3>
+                        <p>Transmission system distribution</p>
+                    </div>
+                    <canvas id="transmissionChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>📅 Age vs Maintenance</h3>
+                        <p>Maintenance probability by age</p>
+                    </div>
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Component Analysis -->
+            <div class="components-section">
+                <div class="section-header">
+                    <h3>🔧 Component Condition Analysis</h3>
+                    <p>Detailed breakdown of vehicle components</p>
+                </div>
+                <div class="components-grid">
+                    <div class="component-card">
+                        <div class="component-header">
+                            <span class="component-icon">🛞</span>
+                            <h4>Tire Conditions</h4>
+                        </div>
+                        <canvas id="tireChart"></canvas>
+                    </div>
+                    <div class="component-card">
+                        <div class="component-header">
+                            <span class="component-icon">🛑</span>
+                            <h4>Brake Conditions</h4>
+                        </div>
+                        <canvas id="brakeChart"></canvas>
+                    </div>
+                    <div class="component-card">
+                        <div class="component-header">
+                            <span class="component-icon">🔋</span>
+                            <h4>Battery Status</h4>
+                        </div>
+                        <canvas id="batteryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSV Data Analytics Section -->
+        <div class="data-analytics-section">
+            <div class="section-header">
+                <h2>📊 CSV Dataset Analytics</h2>
+                <p>Comprehensive analysis of your vehicle maintenance dataset</p>
+            </div>
+
+            <!-- Dataset Overview Cards -->
+            <div class="dataset-overview">
+                <div class="overview-card">
+                    <div class="overview-icon">📁</div>
+                    <div class="overview-content">
+                        <div class="overview-value" id="total-records">0</div>
+                        <div class="overview-label">Total Records</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">⚙️</div>
+                    <div class="overview-content">
+                        <div class="overview-value" id="maintenance-records">0</div>
+                        <div class="overview-label">Maintenance Records</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">📈</div>
+                    <div class="overview-content">
+                        <div class="overview-value" id="maintenance-rate">0%</div>
+                        <div class="overview-label">Maintenance Rate</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">🏷️</div>
+                    <div class="overview-content">
+                        <div class="overview-value" id="total-columns">0</div>
+                        <div class="overview-label">Data Columns</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dataset Sample Table -->
+            <div class="dataset-sample-section">
+                <div class="section-header">
+                    <h3>🔍 Dataset Sample</h3>
+                    <p>First few rows from your CSV dataset</p>
+                </div>
+                <div class="sample-table-container">
+                    <table class="sample-table" id="sample-table">
+                        <thead>
+                            <tr id="sample-table-headers">
+                                <!-- Headers will be populated by JavaScript -->
+                            </tr>
+                        </thead>
+                        <tbody id="sample-table-body">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-info">
+                    <p>Showing <span id="sample-count">0</span> of <span id="total-rows">0</span> total records</p>
+                </div>
+            </div>
+
+            <!-- Feature Correlations -->
+            <div class="correlations-section">
+                <div class="section-header">
+                    <h3>🔗 Feature Correlations</h3>
+                    <p>How different features correlate with maintenance needs</p>
+                </div>
+                <div class="correlations-grid" id="correlations-grid">
+                    <!-- Correlation cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Data Quality Metrics -->
+            <div class="quality-metrics-section">
+                <div class="section-header">
+                    <h3>✅ Data Quality Metrics</h3>
+                    <p>Dataset health and completeness analysis</p>
+                </div>
+                <div class="quality-metrics" id="quality-metrics">
+                    <!-- Quality metrics will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <div class="section-header">
+                <h2>🌟 Why Choose Our System?</h2>
+                <p>Advanced features for accurate vehicle maintenance prediction</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Advanced machine learning algorithms for precise maintenance predictions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Analytics</h3>
+                    <p>Live data visualization and comprehensive analytics dashboard</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Results</h3>
+                    <p>Get maintenance predictions instantly with detailed probability analysis</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Preventive Care</h3>
+                    <p>Identify maintenance needs before they become serious problems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get visualization data from Flask
+        const vizData = {{ visualization_data | tojson }};
+        
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            if (vizData && vizData.success) {
+                initializeCharts();
+                updateMetrics();
+                displayCSVAnalytics();
+            } else if (vizData && vizData.error) {
+                showDataError(vizData.error);
+            }
+        });
+
+        function updateMetrics() {
+            if (vizData && vizData.success) {
+                document.getElementById('total-vehicles').textContent = vizData.total_vehicles.toLocaleString();
+                document.getElementById('maintenance-percentage').textContent = vizData.maintenance_percentage + '%';
+                document.getElementById('avg-mileage').textContent = vizData.avg_mileage.toLocaleString();
+                document.getElementById('avg-age').textContent = vizData.avg_age + ' yrs';
+            }
+        }
+
+        function showDataError(error) {
+            const chartsContainer = document.querySelector('.charts-grid');
+            chartsContainer.innerHTML = `
+                <div class="error-state">
+                    <div class="error-icon">⚠️</div>
+                    <h3>Data Loading Issue</h3>
+                    <p>${error}</p>
+                    <p class="error-help">Please ensure the dataset file is available and properly formatted.</p>
+                </div>
+            `;
+        }
+
+        function initializeCharts() {
+            if (!vizData || !vizData.success) return;
+
+            // Maintenance Distribution Chart
+            new Chart(document.getElementById('maintenanceChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: vizData.maintenance_dist.labels,
+                    datasets: [{
+                        data: vizData.maintenance_dist.data,
+                        backgroundColor: vizData.maintenance_dist.colors,
+                        borderWidth: 0,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Vehicle Types Chart
+            new Chart(document.getElementById('vehicleChart'), {
+                type: 'pie',
+                data: {
+                    labels: vizData.vehicle_dist.labels,
+                    datasets: [{
+                        data: vizData.vehicle_dist.data,
+                        backgroundColor: vizData.vehicle_dist.colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Fuel Types Chart
+            new Chart(document.getElementById('fuelChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: vizData.fuel_dist.labels,
+                    datasets: [{
+                        data: vizData.fuel_dist.data,
+                        backgroundColor: vizData.fuel_dist.colors,
+                        borderWidth: 0
+                    }]
+                }
+            });
+
+            // Maintenance History Chart
+            new Chart(document.getElementById('historyChart'), {
+                type: 'bar',
+                data: {
+                    labels: vizData.history_dist.labels,
+                    datasets: [{
+                        label: 'Number of Vehicles',
+                        data: vizData.history_dist.data,
+                        backgroundColor: vizData.history_dist.colors,
+                        borderWidth: 0,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Transmission Types Chart
+            new Chart(document.getElementById('transmissionChart'), {
+                type: 'pie',
+                data: {
+                    labels: vizData.transmission_dist.labels,
+                    datasets: [{
+                        data: vizData.transmission_dist.data,
+                        backgroundColor: vizData.transmission_dist.colors,
+                        borderWidth: 0
+                    }]
+                }
+            });
+
+            // Age vs Maintenance Chart
+            new Chart(document.getElementById('ageChart'), {
+                type: 'bar',
+                data: {
+                    labels: vizData.age_correlation.labels,
+                    datasets: [{
+                        label: 'Maintenance Probability %',
+                        data: vizData.age_correlation.data,
+                        backgroundColor: vizData.age_correlation.colors,
+                        borderWidth: 0,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Component Charts
+            new Chart(document.getElementById('tireChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: vizData.components_data.tire.labels,
+                    datasets: [{
+                        data: vizData.components_data.tire.data,
+                        backgroundColor: vizData.components_data.tire.colors
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('brakeChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: vizData.components_data.brake.labels,
+                    datasets: [{
+                        data: vizData.components_data.brake.data,
+                        backgroundColor: vizData.components_data.brake.colors
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('batteryChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: vizData.components_data.battery.labels,
+                    datasets: [{
+                        data: vizData.components_data.battery.data,
+                        backgroundColor: vizData.components_data.battery.colors
+                    }]
+                }
+            });
+        }
+
+        // CSV Data Analytics Functions
+        function displayCSVAnalytics() {
+            if (!vizData || !vizData.success) return;
+            
+            // Update overview cards
+            if (vizData.dataset_stats && !vizData.dataset_stats.error) {
+                const stats = vizData.dataset_stats;
+                document.getElementById('total-records').textContent = stats.total_records?.toLocaleString() || '0';
+                document.getElementById('maintenance-records').textContent = stats.maintenance_count?.toLocaleString() || '0';
+                document.getElementById('maintenance-rate').textContent = stats.maintenance_rate + '%' || '0%';
+                document.getElementById('total-columns').textContent = stats.columns?.length || '0';
+                
+                // Display sample data
+                displaySampleData();
+                
+                // Display feature correlations
+                displayFeatureCorrelations();
+                
+                // Display data quality metrics
+                displayQualityMetrics();
+            }
+        }
+
+        function displaySampleData() {
+            if (vizData.sample_data && !vizData.sample_data.error) {
+                const sampleData = vizData.sample_data.sample_data;
+                const columns = vizData.sample_data.columns;
+                const totalRows = vizData.sample_data.total_rows;
+                
+                // Create table headers
+                const headersRow = document.getElementById('sample-table-headers');
+                headersRow.innerHTML = '';
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col;
+                    headersRow.appendChild(th);
+                });
+                
+                // Create table body
+                const tableBody = document.getElementById('sample-table-body');
+                tableBody.innerHTML = '';
+                
+                sampleData.forEach(row => {
+                    const tr = document.createElement('tr');
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.textContent = row[col];
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+                
+                // Update counts
+                document.getElementById('sample-count').textContent = sampleData.length;
+                document.getElementById('total-rows').textContent = totalRows;
+            }
+        }
+
+        function displayFeatureCorrelations() {
+            if (vizData.feature_analysis && !vizData.feature_analysis.error) {
+                const correlations = vizData.feature_analysis.feature_correlations;
+                const correlationsGrid = document.getElementById('correlations-grid');
+                correlationsGrid.innerHTML = '';
+                
+                Object.entries(correlations).forEach(([feature, correlation]) => {
+                    const correlationCard = document.createElement('div');
+                    correlationCard.className = 'correlation-card';
+                    
+                    const correlationValue = Math.abs(correlation);
+                    let strength = 'Weak';
+                    let color = '#ff6b6b';
+                    
+                    if (correlationValue > 0.7) {
+                        strength = 'Strong';
+                        color = '#51cf66';
+                    } else if (correlationValue > 0.3) {
+                        strength = 'Moderate';
+                        color = '#ffd43b';
+                    }
+                    
+                    correlationCard.innerHTML = `
+                        <div class="correlation-header">
+                            <h4>${feature}</h4>
+                            <span class="correlation-strength" style="background: ${color}">${strength}</span>
+                        </div>
+                        <div class="correlation-value">${correlation.toFixed(3)}</div>
+                        <div class="correlation-bar">
+                            <div class="correlation-fill" style="width: ${Math.abs(correlation) * 100}%; background: ${color}"></div>
+                        </div>
+                    `;
+                    
+                    correlationsGrid.appendChild(correlationCard);
+                });
+            }
+        }
+
+        function displayQualityMetrics() {
+            if (vizData.dataset_stats && !vizData.dataset_stats.error) {
+                const stats = vizData.dataset_stats;
+                const qualityMetrics = document.getElementById('quality-metrics');
+                qualityMetrics.innerHTML = '';
+                
+                // Calculate completeness
+                const totalCells = stats.total_records * stats.columns.length;
+                const missingCells = Object.values(stats.missing_values).reduce((a, b) => a + b, 0);
+                const completeness = ((totalCells - missingCells) / totalCells * 100).toFixed(1);
+                
+                const metrics = [
+                    { label: 'Data Completeness', value: completeness + '%', icon: '📊' },
+                    { label: 'Missing Values', value: missingCells, icon: '⚠️' },
+                    { label: 'Numerical Features', value: Object.keys(stats.numerical_stats || {}).length, icon: '🔢' },
+                    { label: 'Categorical Features', value: Object.keys(stats.categorical_stats || {}).length, icon: '🏷️' }
+                ];
+                
+                metrics.forEach(metric => {
+                    const metricCard = document.createElement('div');
+                    metricCard.className = 'quality-card';
+                    metricCard.innerHTML = `
+                        <div class="quality-icon">${metric.icon}</div>
+                        <div class="quality-content">
+                            <div class="quality-value">${metric.value}</div>
+                            <div class="quality-label">${metric.label}</div>
+                        </div>
+                    `;
+                    qualityMetrics.appendChild(metricCard);
+                });
+            }
+        }
+
+        // Prediction form handling
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitButton = document.querySelector('.btn-predict');
+            
+            submitButton.innerHTML = '<span class="btn-icon">⏳</span> Analyzing...';
+            submitButton.disabled = true;
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data);
+                submitButton.innerHTML = '<span class="btn-icon">🔮</span> Predict Maintenance Need';
+                submitButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitButton.innerHTML = '<span class="btn-icon">🔮</span> Predict Maintenance Need';
+                submitButton.disabled = false;
+            });
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (data.error) {
+                resultsDiv.innerHTML = `
+                    <div class="error-result">
+                        <div class="error-icon">❌</div>
+                        <h3>Prediction Error</h3>
+                        <p>${data.error}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const isMaintenance = data.prediction === 'Maintenance Needed';
+            const resultClass = isMaintenance ? 'maintenance-needed' : 'no-maintenance';
+            
+            resultsDiv.innerHTML = `
+                <div class="prediction-result ${resultClass}">
+                    <div class="result-header">
+                        <div class="result-icon">${isMaintenance ? '⚠️' : '✅'}</div>
+                        <h3>${data.prediction}</h3>
+                    </div>
+                    <div class="confidence-section">
+                        <div class="confidence-info">
+                            <span class="confidence-label">AI Confidence:</span>
+                            <span class="confidence-value">${data.confidence}%</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: ${data.confidence}%"></div>
+                        </div>
+                    </div>
+                    <div class="probability-details">
+                        <p>${data.details}</p>
+                    </div>
+                    <div class="recommendation">
+                        ${isMaintenance ? 
+                            '🚨 We strongly recommend scheduling maintenance immediately to prevent further issues.' :
+                            '🎉 Your vehicle appears to be in excellent condition! Regular checkups recommended.'
+                        }
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
