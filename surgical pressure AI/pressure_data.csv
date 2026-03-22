@@ -1,0 +1,11 @@
+pressure,tissue_type,risk
+0.5,nerve,safe
+1.2,nerve,moderate
+2.5,nerve,high
+1.0,muscle,safe
+2.8,muscle,moderate
+3.5,muscle,high
+0.7,nerve,safe
+1.8,nerve,moderate
+3.2,muscle,high
+2.1,muscle,moderate
