@@ -1,0 +1,26 @@
+python
+java
+c++
+communication
+machine learning
+deep learning
+data analysis
+excel
+html
+css
+javascript
+sql
+power bi
+opencv
+nlp
+django
+flask
+react
+node
+git
+problem solving
+leadership
+teamwork
+DSA
+
+
